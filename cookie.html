@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Example</title>
+    </head>
+<body>
+    <div class="container">
+        <h1>Cookie Management Demo</h1>
+    <button id="createCookie">Create Session Cookie</button>
+        <button id="readCookie">Read Cookie Value</button>
+        <button id="deleteCookie" class="delete">Delete Cookie</button>
+        
+        <div id="cookieValue">
+            Current userSession cookie value: <span id="valueDisplay">Not read yet</span>
+        </div>
+    </div>
+
+    <script>
+        // Function to create a cookie that expires in 24 hours
+        function createCookie() {
+            const cookieName = "userSession";
+            const cookieValue = "123456";
+            const expires = new Date();
+            
+            // Set expiration to 24 hours from now
+            expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
+            
+            // Create the cookie string
+            const cookieString = `${cookieName}=${cookieValue}; expires=${expires.toUTCString()}; path=/`;
+            
+            // Set the cookie
+            document.cookie = cookieString;
+            
+            alert("Cookie 'userSession' created successfully with value '123456' (expires in 24 hours)!");
+            updateCookieDisplay();
+        }
+
+        // Function to read a specific cookie by name
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Function to display the current cookie value
+        function updateCookieDisplay() {
+            const value = getCookie("userSession");
+            const displayElement = document.getElementById("valueDisplay");
+            
+            if (value !== null) {
+                displayElement.textContent = value;
+                displayElement.style.color = "green";
+            } else {
+                displayElement.textContent = "No cookie found";
+                displayElement.style.color = "red";
+            }
+        }
+
+        // Function to delete the cookie
+        function deleteCookie() {
+            if (getCookie("userSession") !== null) {
+                // To delete a cookie, set its expiration date to the past
+                document.cookie = "userSession=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                alert("Cookie 'userSession' has been deleted successfully!");
+                updateCookieDisplay();
+            } else {
+                alert("No 'userSession' cookie exists to delete.");
+            }
+        }
+
+        // Event Listeners
+        document.getElementById("createCookie").addEventListener("click", createCookie);
+        document.getElementById("readCookie").addEventListener("click", updateCookieDisplay);
+        document.getElementById("deleteCookie").addEventListener("click", deleteCookie);
+
+        // Display current cookie value when page loads
+        window.onload = function() {
+            updateCookieDisplay();
+        };
+    </script>
+
+</body>
+</html>
